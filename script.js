@@ -15,16 +15,16 @@ class Category {
     const inputGroupDiv = document.createElement("div");
     inputGroupDiv.className = "input-group";
 
-    const numberOfMembers = document.createElement("input");
-    numberOfMembers.name = "numberOfMembers";
-    numberOfMembers.id = "numberOfMembers";
-    numberOfMembers.type = "number";
-    numberOfMembers.min = "1";
-    numberOfMembers.max = "100";
-    numberOfMembers.value = "1";
-    numberOfMembers.required = true;
-    numberOfMembers.addEventListener("input", function (event) {
-      this.updateTotal.bind(this);
+    this.numberOfMembers = document.createElement("input");
+    this.numberOfMembers.name = "numberOfMembers";
+    this.numberOfMembers.id = "numberOfMembers";
+    this.numberOfMembers.type = "number";
+    this.numberOfMembers.min = "1";
+    this.numberOfMembers.max = "100";
+    this.numberOfMembers.value = "1";
+    this.numberOfMembers.required = true;
+    this.numberOfMembers.addEventListener("input", (event) => {
+      this.updateTotal();
     });
 
     const numberOfMembersLabel = document.createElement("label");
@@ -54,9 +54,9 @@ class Category {
     const totalPerPersonLabel = document.createElement("h3");
     totalPerPersonLabel.className = "light";
     totalPerPersonLabel.innerHTML = "total per person: ";
-    const totalPerPerson = document.createElement("h3");
-    totalPerPerson.innerHTML = " 0€ ";
-    totalPerPerson.className = "light total-value";
+    this.totalPerPerson = document.createElement("h3");
+    this.totalPerPerson.innerHTML = " 0€ ";
+    this.totalPerPerson.className = "light total-value";
 
     const valueNameSmallDiv = document.createElement("div");
     valueNameSmallDiv.className = "name-value-pair";
@@ -64,16 +64,16 @@ class Category {
     const totalLabel = document.createElement("h4");
     totalLabel.innerHTML = "total: ";
     totalLabel.className = "light";
-    const total = document.createElement("h4");
-    total.innerHTML = " 0€";
-    total.className = "total-value light";
+    this.total = document.createElement("h4");
+    this.total.innerHTML = " 0€";
+    this.total.className = "total-value light";
 
     categoryDiv.appendChild(leftSide);
     categoryDiv.appendChild(rightSide);
 
     leftSide.appendChild(categoryNameInput);
     leftSide.appendChild(inputGroupDiv);
-    inputGroupDiv.appendChild(numberOfMembers);
+    inputGroupDiv.appendChild(this.numberOfMembers);
     inputGroupDiv.appendChild(numberOfMembersLabel);
     leftSide.appendChild(this.categoryValuesDiv);
     this.categoryValuesDiv.appendChild(itemHeaderDiv);
@@ -83,12 +83,12 @@ class Category {
     rightSide.appendChild(valueNameDiv);
     rightSide.appendChild(valueNameSmallDiv);
     valueNameDiv.appendChild(totalPerPersonLabel);
-    valueNameDiv.appendChild(totalPerPerson);
+    valueNameDiv.appendChild(this.totalPerPerson);
     valueNameSmallDiv.appendChild(totalLabel);
-    valueNameSmallDiv.appendChild(total);
+    valueNameSmallDiv.appendChild(this.total);
 
-    this.updateTotal();
     this.addValue();
+    this.updateTotal();
     categoriesBox.appendChild(categoryDiv);
   }
 
@@ -122,50 +122,20 @@ class Category {
   }
 
   updateTotal() {
-    console.log("updated");
-    let total = 0;
-
+    let TotalSum = 0;
     const itemDivs = this.categoryValuesDiv.getElementsByClassName("item");
-    console.log(itemDivs);
     for (const itemDiv of itemDivs) {
       const itemInput = itemDiv.querySelector("input");
       if (itemInput && !isNaN(parseFloat(itemInput.value))) {
-        total += parseFloat(itemInput.value);
+        TotalSum += parseFloat(itemInput.value);
       }
     }
 
-    const totalValueLabel = document.querySelector(".total-value.light");
-    const numPeople = document.getElementById("numberOfMembers");
-    if (totalValueLabel && numPeople) {
-      totalValueLabel.innerHTML = total.toFixed(2) + "€";
-      const totalPerPerson = total / parseInt(numPeople.value, 10);
-      this.totalValueLabel.innerHTML = totalPerPerson.toFixed(2) + "€";
-    }
+    this.total.innerHTML = TotalSum.toFixed(2) + "€";
+    const TotalSumPerPerson = TotalSum / parseInt(this.numberOfMembers.value, 10);
+    this.totalPerPerson.innerHTML = TotalSumPerPerson.toFixed(2) + "€";
   }
 }
-
-// function updateTotal() {
-//   let total = 0;
-//   const categories = categoriesBox.getElementsByClassName("category-values");
-
-//   for (const category of categories) {
-//     const itemDivs = category.getElementsByClassName("item");
-//     for (const itemDiv of itemDivs) {
-//       const itemInput = itemDiv.querySelector("input");
-//       if (itemInput && !isNaN(parseFloat(itemInput.value))) {
-//         total += parseFloat(itemInput.value);
-//       }
-//     }
-//   }
-
-//   const totalValueLabel = document.querySelector(".total-value.light");
-//   const numPeople = document.getElementById("numberOfMembers");
-//   if (totalValueLabel && numPeople) {
-//     totalValueLabel.innerHTML = total.toFixed(2) + "€";
-//     const totalPerPerson = total / parseInt(numPeople.value, 10);
-//     totalValueLabel.innerHTML = totalPerPerson.toFixed(2) + "€";
-//   }
-// }
 
 function createNewCategory() {
   new Category();
